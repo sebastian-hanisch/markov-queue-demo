@@ -61,7 +61,9 @@ def test_first_loss_times():
 
 
 def test_the_dense_system_fails_where_the_stable_solution_does_not():
-    """README: Dichte Lösung bei Angebot 1: 20 Spuren −1.8·10¹⁷ statt 3.5·10¹⁷, 15 Spuren Fehler 2·10⁻⁶; Angebot 3, 20 Spuren noch 2·10⁻⁸; Stufenrekursion gegen Bruchrechnung auf 1e-15."""
+    """README: Dichte Lösung bei Angebot 1 und 20 Spuren: Betrag in der Größenordnung 10¹⁷, aber mit falschem Vorzeichen bzw. mehr als 100 % daneben (3.5·10¹⁷ ist richtig); 15 Spuren: Fehler
+    in der Größenordnung 10⁻⁶; Angebot 3, 20 Spuren: Fehler zwischen 10⁻⁹ und 10⁻⁶; Stufenrekursion gegen Bruchrechnung auf 1e-15. Die Stellen des schlecht konditionierten dichten Systems hängen
+    von der LAPACK-Bibliothek ab (Windows 2e-8, Linux 4e-8), deshalb stehen hier Bänder statt Ziffern."""
     from fractions import Fraction
 
     def exact(c, a):
@@ -71,9 +73,12 @@ def test_the_dense_system_fails_where_the_stable_solution_does_not():
             tot += d
         return float(tot)
 
+    assert f"{exact(20, 1):.1e}" == "3.5e+17"
     dense = K.hitting_time_dense(20, 1.0)
-    assert dense < 0 and f"{dense:.1e}" == "-1.8e+17" and f"{exact(20, 1):.1e}" == "3.5e+17"
-    assert f"{abs(K.hitting_time_dense(15, 1.0) / exact(15, 1) - 1):.0e}" == "2e-06" and f"{abs(K.hitting_time_dense(20, 3.0) / exact(20, 3) - 1):.0e}" == "2e-08"
+    assert abs(dense / exact(20, 1) - 1) > 1.0 and 1e16 < abs(dense) < 1e19
+    err15 = abs(K.hitting_time_dense(15, 1.0) / exact(15, 1) - 1)
+    err20 = abs(K.hitting_time_dense(20, 3.0) / exact(20, 3) - 1)
+    assert 1e-7 < err15 < 1e-4 and 1e-9 < err20 < 1e-6
     assert max(abs(K.hitting_time_loss(c, a) / exact(c, a) - 1) for c in range(2, 21) for a in (1, 2, 3, 5)) < 1e-15
 
 
