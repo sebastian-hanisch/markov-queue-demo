@@ -55,7 +55,7 @@ Alle Zahlen stehen in `tests/test_claims.py`. Zeiten in Abfertigungsdauern, wo n
 ## Ehrliche Grenzen
 
 - **Nur exponentielle Zeiten.** Phasen bilden Erlang-Dauern ab (Gegenprobe oben), der Zustandsraum wächst aber mit jeder Phase; beliebige Dauern behandelt Stück 10 mit Formeln.
-- **Ein Gate.** Netze haben als Zustand den Vektor aller Schlangenlängen (Jackson-Netze, Folgestück).
+- **Ein Gate.** Netze haben als Zustand den Vektor aller Schlangenlängen ([Jackson-Netze](https://github.com/sebastian-hanisch/jackson-network-demo)).
 - **Eine Klasse.** Mit Prioritäten wird der Zustand ein Gitter (Stück 11).
 - **Konstante Raten.** Bei zeitabhängiger Ankunftsrate gibt es kein Gleichgewicht (Stück 6).
 - **Zustandsraum klein genug zum Lösen.** Die erste Passage lässt sich bis 20 Spuren exakt rechnen, aber nicht simulieren; wie man seltene Ereignisse trotzdem simuliert, zeigt Stück 9.
@@ -79,7 +79,7 @@ Jede dieser Annahmen hebt ein Folgestück der Linie auf:
 | Annahme | Folgestück |
 |---|---|
 | Gedächtnislose Zeiten | [M/G/1, Kingman-Näherung](https://github.com/sebastian-hanisch/mg1-kingman-demo) |
-| Ein Gate | Jackson-Netze |
+| Ein Gate | [Jackson-Netze](https://github.com/sebastian-hanisch/jackson-network-demo) |
 | Eine Klasse | [Prioritätsklassen](https://github.com/sebastian-hanisch/priority-queue-demo) |
 | Konstante Raten | [Zeitvariable Ankünfte](https://github.com/sebastian-hanisch/time-varying-arrivals-demo) |
 | Der Zustandsraum ist klein genug | [Seltene Ereignisse (Splitting)](https://github.com/sebastian-hanisch/splitting-demo) |

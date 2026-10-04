@@ -242,7 +242,7 @@ st.markdown(
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
 | **Gedächtnislose (exponentielle) Zeiten** | Mit Phasen lassen sich Erlang- und Hyperexponential-Dauern abbilden, der Zustandsraum wächst aber mit jeder Phase; für beliebige Dauern braucht man andere Werkzeuge. | **[M/G/1, Kingman-Näherung](https://sebastianhanisch-mg1-kingman-demo.streamlit.app/)** |
-| **Ein Gate** | In Netzen ist der Zustand der Vektor aller Schlangenlängen; der Zustandsraum wächst mit jeder Station, und es gibt Formeln mit Produktform. | **Jackson-Netze** (Folgestück) |
+| **Ein Gate** | In Netzen ist der Zustand der Vektor aller Schlangenlängen; der Zustandsraum wächst mit jeder Station, und es gibt Formeln mit Produktform. | **[Jackson-Netze](https://sebastianhanisch-jackson-network-demo.streamlit.app/)** |
 | **Eine Klasse von Lkw** | Mit Prioritätsklassen wird der Zustand zweidimensional (Zahl je Klasse), die Kette wird zum Gitter. | **[Prioritätsklassen](https://sebastianhanisch-priority-queue-demo.streamlit.app/)** |
 | **Konstante Raten** | Bei zeitabhängigen Raten gibt es kein Gleichgewicht; p(t) folgt dann einer Differentialgleichung mit zeitabhängigem Generator. | **[Zeitvariable Ankünfte](https://sebastianhanisch-time-varying-arrivals-demo.streamlit.app/)** |
 | **Der Zustandsraum ist klein genug zum Lösen** | Große oder sehr seltene Zustände lassen sich nicht mehr exakt rechnen (hier ab etwa 20 Spuren für die erste Passage); dann bleibt nur Simulation, mit Tricks. | **[Seltene Ereignisse (Splitting)](https://sebastianhanisch-splitting-demo.streamlit.app/)** |
