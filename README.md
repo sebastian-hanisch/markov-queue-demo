@@ -1,5 +1,9 @@
 # Warteschlangen als Markov-Ketten (Streamlit-Demo)
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-markov-queue-demo.streamlit.app/)**
+
+---
+
 Interaktive Einführung in das Rechenwerkzeug hinter den Formeln der Linie: **Zusatzstück der Konzepte-Linie „Warteschlangentheorie und Simulation“** im Portfolio von
 [Sebastian Hanisch](https://sebastianhanisch.net) (Operations Research und Machine Learning). Das Stück ist nicht nummeriert; es liefert die Grundlage zu
 [mm1-queue-demo](https://github.com/sebastian-hanisch/mm1-queue-demo) (Stück 1) und [mmc-queue-demo](https://github.com/sebastian-hanisch/mmc-queue-demo) (Stück 3) und ist der Bezug für alle späteren Ketten der Linie.
