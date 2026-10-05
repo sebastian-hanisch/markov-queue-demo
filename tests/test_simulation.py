@@ -47,8 +47,10 @@ def test_time_fractions_match_the_stationary_distribution(c, k, a):
 
 
 def test_first_loss_time_by_hand():
-    """c = 1: die erste Ankunft beendet die Suche; Zeit = Skriptwert."""
-    assert S.first_loss_time(1, 2.0, ScriptedRng(exp_values=[0.7], uniform_values=[0.0])) == 0.7
+    """c = 1, a = 2: die erste Ankunft belegt die Spur (n = 1), erst die zweite Ankunft ist der Verlust. Skript 0.7 (0 → 1), 0.3 (1 → 2 = Verlust, Zufall 0.0 < 2/3): Zeit 1.0.
+    Mit Rückfall: 0.7 (0 → 1), 0.3 (Zufall 0.9 ≥ 2/3: Abgang, 1 → 0), 0.5 (0 → 1), 0.2 (1 → 2): Zeit 1.7 (bis die Spur zum ersten Mal belegt ist, wären es nur 0.7)."""
+    assert S.first_loss_time(1, 2.0, ScriptedRng(exp_values=[0.7, 0.3], uniform_values=[0.0, 0.0])) == pytest.approx(1.0)
+    assert S.first_loss_time(1, 2.0, ScriptedRng(exp_values=[0.7, 0.3, 0.5, 0.2], uniform_values=[0.0, 0.9, 0.0, 0.0])) == pytest.approx(1.7)
 
 
 def test_mean_first_loss_time_matches_the_exact_solution():

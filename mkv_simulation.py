@@ -56,10 +56,10 @@ def time_fractions(c, k, a, horizon, rng, start=0):
 
 
 def first_loss_time(c, a, rng):
-    """Zeit bis zum ersten Erreichen von c Belegten im Erlang-Verlustsystem (Start leer): Zustand n < c mit Ankunftsrate a und Abgangsrate n."""
+    """Zeit bis zum ersten Verlust im Erlang-Verlustsystem (Start leer): bis eine Ankunft auf alle c belegten Spuren trifft. Zustand n ≤ c mit Ankunftsrate a und Abgangsrate n; die Ankunft im Zustand c ist der Verlust."""
     t, n = 0.0, 0
-    while n < c:
-        dt, n = jump(n, c, c + 1, a, rng)         # Kapazität c + 1 genügt: bei n < c gibt es immer eine Ankunft; der Zustand c wird nicht verlassen
+    while n <= c:
+        dt, n = jump(n, c, c + 1, a, rng)         # Kapazität c + 1 als Hilfszustand: n = c + 1 bedeutet „Ankunft auf voller Anlage“ (Verlust) und beendet die Schleife
         t += dt
     return t
 

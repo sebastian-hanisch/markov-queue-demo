@@ -137,18 +137,20 @@ def test_relaxation_time_reaches_the_level_by_construction():
 
 
 def test_hitting_time_by_hand():
-    """c = 1: Wartezeit auf die erste Ankunft 1/a. c = 2, a = 1: h₀ = 1/a + h₁, h₁ = 1/(a + 1) + h₀/(a + 1) → h₀ = 3.
-    c = 3, a = 1: h₀ = 1 + h₁, h₁ = 1/2 + (h₂ + h₀)/2, h₂ = 1/3 + (2/3)h₁ → h₁ = 7, h₂ = 5, h₀ = 8."""
-    assert K.hitting_time_loss(1, 2.0) == pytest.approx(0.5)
-    assert K.hitting_time_loss(2, 1.0) == pytest.approx(3.0)
-    assert K.hitting_time_loss(3, 1.0) == pytest.approx(8.0)
+    """Zeit bis zum ersten VERLUST (Ankunft auf lauter belegte Spuren), von Hand über die Gleichungen der ersten Schritte:
+    c = 1, a = 2: h₀ = 1/a + h₁, h₁ = 1/(a + 1) + h₀/(a + 1) (mit Wahrscheinlichkeit 1/(a + 1) geht der Lkw weg und das Gate ist wieder leer) → h₀ = 1.25.
+    c = 2, a = 1: h₀ = 1 + h₁, h₁ = 1/2 + (h₂ + h₀)/2, h₂ = 1/3 + (2/3)h₁ → h₁ = 7, h₀ = 8 (nicht 3: so lange dauert es nur, bis beide Spuren zum ersten Mal belegt sind).
+    c = 3, a = 1: Stufen 1, 2, 5, 16 → 24."""
+    assert K.hitting_time_loss(1, 2.0) == pytest.approx(1.25)
+    assert K.hitting_time_loss(2, 1.0) == pytest.approx(8.0)
+    assert K.hitting_time_loss(3, 1.0) == pytest.approx(24.0)
 
 
 def _exact_hitting_time(c, a):
     """Unabhängige Referenz in exakter Bruchrechnung (Stufenrekursion d_i = (1 + i·d_{i−1})/a mit Fraction, kein Rundungsfehler)."""
     from fractions import Fraction
     d, total = Fraction(0), Fraction(0)
-    for i in range(c):
+    for i in range(c + 1):
         d = (1 + i * d) / Fraction(a)
         total += d
     return float(total)
@@ -161,11 +163,11 @@ def test_hitting_time_matches_exact_rational_arithmetic(c, a):
 
 
 def test_the_dense_system_agrees_for_small_c_and_loses_digits_for_large_c():
-    """Dasselbe System dicht gelöst: für c ≤ 8 gleich (1e-9), bei Angebot 1 und c = 20 um mehr als 100 % daneben (Matrix schlecht konditioniert)."""
+    """Dasselbe System dicht gelöst: für c ≤ 8 gleich (1e-9), bei Angebot 1 und c = 20 um mehr als die Hälfte daneben (Matrix schlecht konditioniert)."""
     for c in (2, 5, 8):
         for a in (1.0, 2.0, 3.0):
             assert K.hitting_time_dense(c, a) == pytest.approx(K.hitting_time_loss(c, a), rel=1e-9)
-    assert abs(K.hitting_time_dense(20, 1.0) / K.hitting_time_loss(20, 1.0) - 1) > 1.0
+    assert abs(K.hitting_time_dense(20, 1.0) / K.hitting_time_loss(20, 1.0) - 1) > 0.5
     assert abs(K.hitting_time_dense(15, 3.0) / K.hitting_time_loss(15, 3.0) - 1) < 1e-9
 
 

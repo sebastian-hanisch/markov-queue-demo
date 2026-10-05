@@ -203,8 +203,8 @@ hit_a = st.select_slider("Angebot des Verlustsystems (Erlang)", options=C.HIT_A_
 with st.spinner("Löse das Erste-Passage-System …"):
     exact_hit, sim_cs, sim_hit = _hitting(hit_a, seed)
 st.markdown(
-    "Die **mittlere Zeit bis zum ersten Erreichen** eines Zustands ergibt sich aus den Gleichungen der ersten Schritte (ein lineares System über die übrigen Zustände, das sich Stufe für Stufe lösen lässt): aus dem leeren Gate bis alle c Spuren belegt sind, also bis zum **ersten Verlust**. "
-    "Bis zehn Spuren lässt sich das auch simulieren (Punkte, 1000 Läufe); darüber hinaus nicht mehr: das ist das Problem der seltenen Ereignisse aus Stück 9."
+    "Die **mittlere Zeit bis zum ersten Erreichen** eines Zustands ergibt sich aus den Gleichungen der ersten Schritte (ein lineares System über die übrigen Zustände, das sich Stufe für Stufe lösen lässt): aus dem leeren Gate bis zum **ersten Verlust**, also bis eine Ankunft auf lauter belegte Spuren trifft (nicht schon bis zum ersten Mal alle c Spuren belegt sind: von dort fällt das System oft wieder auf c − 1 zurück, bevor der nächste Lkw kommt). "
+    "Solange die Zeit unter 250 Abfertigungsdauern bleibt (gerade Spurzahlen bis zehn), lässt sich das auch simulieren (Punkte, 1000 Läufe); darüber hinaus nicht mehr: das ist das Problem der seltenen Ereignisse aus Stück 9."
 )
 st.plotly_chart(build_hitting_chart(hit_a, list(C.HIT_C_RANGE), exact_hit, sim_cs, sim_hit), width="stretch", key=f"hit_{hit_a}_{seed}")
 rows = []
@@ -270,7 +270,7 @@ Kennzahlen: $L = \sum n\pi_n$, $L_q = \sum (n - c)^+\pi_n$, Verlust $\pi_K$, Dur
 
 **Einschwingen.** $p(t) = p(0)\,e^{Qt}$ (zeitstetig, exakt); Einschwingzeit = erstes $t$ mit $E[N(t)] \ge 0.95\,E[N(\infty)]$. Faustformel: $1/(1 - \sqrt\rho)^2$.
 
-**Erste Passage.** Erwartete Zeit $h_i$ bis zum Erreichen von $c$ aus Zustand $i$: $(a + i)\,h_i = 1 + a\,h_{i+1} + i\,h_{i-1}$ für $i < c$, $h_c = 0$ (lineares System).
+**Erste Passage.** Erwartete Zeit $h_i$ bis zum ersten Verlust aus Zustand $i$ (der Verlust ist die Ankunft im Zustand $c$): $(a + i)\,h_i = 1 + a\,h_{i+1} + i\,h_{i-1}$ für $i \le c$, $h_{c+1} = 0$ (lineares System).
 
 **Phasen.** $M/E_k/1$: Zustand $(n, \text{Phase})$, Phasenrate $k$, Ankunft $\rho$; Wartezeit $L_q/\rho$ (Little) $= \rho\,(1 + 1/k)/(2(1 - \rho))$ (Pollaczek-Khinchine mit $c_s^2 = 1/k$).
 

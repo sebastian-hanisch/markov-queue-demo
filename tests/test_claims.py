@@ -53,32 +53,32 @@ def test_relaxation_times():
 
 
 def test_first_loss_times():
-    """README: Angebot 3: 5 Spuren 4.0, 8 Spuren 28.7, 10 Spuren 192.9, 15 Spuren 156 329 (rund 11 Monate), 20 Spuren 8.3·10⁸ (rund 4 760 Jahre)."""
+    """README: Angebot 3, Zeit bis zum ersten Verlust: 5 Spuren 7.0, 8 Spuren 69.6, 10 Spuren 604.3, 15 Spuren 766 487 (rund 4.4 Jahre), 20 Spuren 5.5·10⁹ (rund 31 420 Jahre)."""
     h = {c: K.hitting_time_loss(c, 3.0) for c in (5, 8, 10, 15, 20)}
-    assert [round(h[5], 1), round(h[8], 1), round(h[10], 1), round(h[15]), f"{h[20]:.1e}"] == [4.0, 28.7, 192.9, 156329, "8.3e+08"]
-    assert round(K.to_minutes(h[15]) / (30.44 * 24 * 60)) == 11 and round(K.to_minutes(h[20]) / (365 * 24 * 60), -1) == 4760
-    assert C.fmt_sci(h[20]) == "8.3·10⁸"
+    assert [round(h[5], 1), round(h[8], 1), round(h[10], 1), round(h[15]), f"{h[20]:.1e}"] == [7.0, 69.6, 604.3, 766487, "5.5e+09"]
+    assert round(K.to_minutes(h[15]) / (365 * 24 * 60), 1) == 4.4 and round(K.to_minutes(h[20]) / (365 * 24 * 60), -1) == 31420
+    assert C.fmt_sci(h[20]) == "5.5·10⁹"
 
 
 def test_the_dense_system_fails_where_the_stable_solution_does_not():
-    """README: Dichte Lösung bei Angebot 1 und 20 Spuren: Betrag in der Größenordnung 10¹⁷, aber mit falschem Vorzeichen bzw. mehr als 100 % daneben (3.5·10¹⁷ ist richtig); 15 Spuren: Fehler
-    in der Größenordnung 10⁻⁶; Angebot 3, 20 Spuren: Fehler zwischen 10⁻⁹ und 10⁻⁶; Stufenrekursion gegen Bruchrechnung auf 1e-15. Die Stellen des schlecht konditionierten dichten Systems hängen
-    von der LAPACK-Bibliothek ab (Windows 2e-8, Linux 4e-8), deshalb stehen hier Bänder statt Ziffern."""
+    """README: Dichte Lösung bei Angebot 1 und 20 Spuren: Betrag in der Größenordnung 10¹⁷, aber um mehr als die Hälfte daneben, hier sogar negativ (7.0·10¹⁸ ist richtig); 15 Spuren: Fehler
+    in der Größenordnung 10⁻⁵; Angebot 3, 20 Spuren: Fehler zwischen 10⁻⁹ und 10⁻⁶; Stufenrekursion gegen Bruchrechnung auf 1e-15. Die Stellen des schlecht konditionierten dichten Systems hängen
+    von der LAPACK-Bibliothek ab, deshalb stehen hier Bänder statt Ziffern."""
     from fractions import Fraction
 
     def exact(c, a):
         d, tot = Fraction(0), Fraction(0)
-        for i in range(c):
+        for i in range(c + 1):
             d = (1 + i * d) / Fraction(a)
             tot += d
         return float(tot)
 
-    assert f"{exact(20, 1):.1e}" == "3.5e+17"
+    assert f"{exact(20, 1):.1e}" == "7.0e+18"
     dense = K.hitting_time_dense(20, 1.0)
-    assert abs(dense / exact(20, 1) - 1) > 1.0 and 1e16 < abs(dense) < 1e19
+    assert abs(dense / exact(20, 1) - 1) > 0.5 and 1e15 < abs(dense) < 1e20
     err15 = abs(K.hitting_time_dense(15, 1.0) / exact(15, 1) - 1)
     err20 = abs(K.hitting_time_dense(20, 3.0) / exact(20, 3) - 1)
-    assert 1e-7 < err15 < 1e-4 and 1e-9 < err20 < 1e-6
+    assert 1e-7 < err15 < 1e-3 and 1e-9 < err20 < 1e-6
     assert max(abs(K.hitting_time_loss(c, a) / exact(c, a) - 1) for c in range(2, 21) for a in (1, 2, 3, 5)) < 1e-15
 
 

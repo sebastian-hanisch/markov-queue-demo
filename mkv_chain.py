@@ -150,15 +150,15 @@ def relaxation_heuristic(rho):
 
 
 def hitting_time_dense(c, a):
-    """Erste Passage als dichtes lineares System über die Zustände 0 … c − 1 (Gegenprobe für kleine c): (a + i)·h_i = 1 + a·h_{i+1} + i·h_{i−1}, h_c = 0.
+    """Zeit bis zum ersten Verlust als dichtes lineares System über die Zustände 0 … c (Gegenprobe für kleine c): (a + i)·h_i = 1 + a·h_{i+1} + i·h_{i−1}, mit h_{c+1} = 0 (die Ankunft in Zustand c ist der Verlust).
     Die Matrix ist für große c schlecht konditioniert (Einträge von sehr verschiedener Größe); ab etwa c = 12 verliert die Lösung Stellen, ab c = 20 kann sie sogar negativ werden."""
     if c < 1 or a <= 0:
         raise ValueError("c ≥ 1 und a > 0 erwartet")
-    m = np.zeros((c, c))
-    b = -np.ones(c)
-    for i in range(c):
+    m = np.zeros((c + 1, c + 1))
+    b = -np.ones(c + 1)
+    for i in range(c + 1):
         m[i, i] = -(a + i)
-        if i + 1 < c:
+        if i + 1 <= c:
             m[i, i + 1] = a
         if i > 0:
             m[i, i - 1] = float(i)
@@ -166,12 +166,13 @@ def hitting_time_dense(c, a):
 
 
 def hitting_time_loss(c, a):
-    """Erwartete Zeit bis zum ersten Erreichen von c Belegten (also dem ersten Verlust) aus dem leeren Erlang-Verlustsystem. Dieselben Gleichungen der ersten Schritte wie im dichten System,
-    aber Stufe für Stufe gelöst: d_i = Zeit von i nach i + 1 erfüllt d_0 = 1/a und d_i = (1 + i·d_{i−1})/a (nur positive Summanden, daher auch für große c stabil); h_0 = Σ d_i."""
+    """Erwartete Zeit bis zum ersten Verlust aus dem leeren Erlang-Verlustsystem: bis eine Ankunft auf alle c belegten Spuren trifft (nicht schon bis zum ersten Mal c Belegte: von dort kann das System
+    wieder in c − 1 zurückfallen, bevor die nächste Ankunft kommt). Dieselben Gleichungen der ersten Schritte wie im dichten System, aber Stufe für Stufe gelöst: d_i = Zeit von i nach i + 1 (für i = c: bis zum Verlust)
+    erfüllt d_0 = 1/a und d_i = (1 + i·d_{i−1})/a (nur positive Summanden, daher auch für große c stabil); h_0 = Σ_{i=0}^{c} d_i."""
     if c < 1 or a <= 0:
         raise ValueError("c ≥ 1 und a > 0 erwartet")
     d, total = 0.0, 0.0
-    for i in range(c):
+    for i in range(c + 1):
         d = (1.0 + i * d) / a
         total += d
     return total
