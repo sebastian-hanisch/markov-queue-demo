@@ -14,6 +14,23 @@ BASE_COLOR = "#9d9d9d"
 PHASE_COLOR = "#54a24b"
 
 
+def _ref_line(fig, value, text, position, axis, log=True, **line_kwargs):
+    """Referenzlinie mit Beschriftung auf einer logarithmischen Achse: die Linie liegt auf dem Datenwert, die Beschriftung braucht log10 des Werts
+    (add_hline und add_vline setzen beide auf denselben Wert, die Beschriftung sitzt dann falsch und dehnt die Achse); log=False für lineare Achsen."""
+    if log and not value > 0.0:
+        return
+    pos = math.log10(value) if log else value
+    top, left = "top" in position, "left" in position
+    if axis == "y":
+        fig.add_hline(y=value, **line_kwargs)
+        if text:
+            fig.add_annotation(xref="paper", yref="y", x=0 if left else 1, y=pos, text=text, showarrow=False, xanchor="left" if left else "right", yanchor="bottom" if top else "top")
+    else:
+        fig.add_vline(x=value, **line_kwargs)
+        if text:
+            fig.add_annotation(xref="x", yref="paper", x=pos, y=1 if top else 0, text=text, showarrow=False, xanchor="right" if left else "left", yanchor="top" if top else "bottom")
+
+
 def lock_axes(fig):
     fig.update_xaxes(fixedrange=True)
     fig.update_yaxes(fixedrange=True)
@@ -75,7 +92,7 @@ def build_convergence_chart(dists, steps, tol):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=xs, y=[d if d > 0 else None for d in dists], mode="lines", line=dict(color=POWER_COLOR, width=2.5), name="L1-Abstand zur exakten Lösung"))
     fig.add_trace(go.Scatter(x=[steps], y=[max(dists[steps], 1e-16)], mode="markers", marker=dict(color=SIM_COLOR, size=11), name="gewählter Schritt"))
-    fig.add_hline(y=tol, line=dict(color=BASE_COLOR, dash="dash"), annotation_text=f"Schwelle {tol:g}")
+    _ref_line(fig, tol, f"Schwelle {tol:g}", "top right", "y", line=dict(color=BASE_COLOR, dash="dash"))
     fig.update_xaxes(title_text="Schritte der Potenzmethode")
     fig.update_yaxes(title_text="Abstand (logarithmisch)", type="log", range=[-16, 0.2], tickvals=[1e-15, 1e-12, 1e-9, 1e-6, 1e-3, 1],
                      ticktext=["10⁻¹⁵", "10⁻¹²", "10⁻⁹", "10⁻⁶", "0.001", "1"])
